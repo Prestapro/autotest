@@ -1,0 +1,61 @@
+{
+  "manifest_version": 3,
+  "name": "PrestaShop Debug Pro - FIXED VERSION",
+  "version": "2.1.0",
+  "description": "ИСПРАВЛЕННАЯ версия: Полная запись пользовательских действий + навигация + LLM-оптимизированный summary",
+  
+  "permissions": [
+    "activeTab",
+    "storage", 
+    "debugger",
+    "webRequest",
+    "webNavigation",
+    "tabs",
+    "scripting",
+    "downloads",
+    "cookies",
+    "history",
+    "notifications"
+  ],
+
+  "host_permissions": [
+    "<all_urls>"
+  ],
+
+  "content_scripts": [{
+    "matches": ["http://localhost:8080/*", "http://localhost:8082/*", "*://*/*"],
+    "js": ["src/js/content-script-enhanced.js", "src/js/advanced-event-tracker.js"],
+    "run_at": "document_idle",
+    "all_frames": false
+  }],
+
+  "background": {
+    "service_worker": "src/js/background-enhanced.js"
+  },
+
+  "action": {
+    "default_popup": "src/html/popup-enhanced.html",
+    "default_title": "PrestaShop Debug Pro - FIXED"
+  },
+
+  "devtools_page": "src/html/devtools.html",
+
+  "externally_connectable": {
+    "matches": [
+      "http://localhost:8080/*",
+      "http://localhost:8082/*",
+      "https://*.prestashop.com/*"
+    ]
+  },
+
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["universal-monitor.js", "cdp-input-monitor.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+# Chrome Extension Development
+*.crx
+*.pem
+key.pem
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build/
+dist/
+*.zip
+
+# Logs
+*.log
+npm-debug.log*
+
+# Node modules (if using build tools)
+node_modules/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Archive folder (old versions)
+archive/
+
+# Test files
+test/
+*.test.js
+.git

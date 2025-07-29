@@ -1,0 +1,83 @@
+name: Chrome Extension CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install Chrome Extension tools
+      run: |
+        npm install -g web-ext
+        npm install -g chrome-webstore-upload-cli
+        
+    - name: Validate manifest.json
+      run: |
+        node -e "
+          const fs = require('fs');
+          const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+          console.log('✅ Manifest version:', manifest.manifest_version);
+          console.log('✅ Extension name:', manifest.name);
+          console.log('✅ Version:', manifest.version);
+          if (!manifest.manifest_version || manifest.manifest_version !== 3) {
+            throw new Error('Invalid manifest version');
+          }
+        "
+        
+    - name: Check JavaScript syntax
+      run: |
+        for file in *.js; do
+          if [ -f "$file" ]; then
+            echo "Checking $file..."
+            node -c "$file" || exit 1
+          fi
+        done
+        
+    - name: Validate JSON files
+      run: |
+        for file in *.json; do
+          if [ -f "$file" ]; then
+            echo "Validating $file..."
+            node -e "JSON.parse(require('fs').readFileSync('$file', 'utf8'))" || exit 1
+          fi
+        done
+        
+    - name: Check required files
+      run: |
+        required_files=("manifest.json" "background-enhanced.js" "content-script-enhanced.js")
+        for file in "${required_files[@]}"; do
+          if [ ! -f "$file" ]; then
+            echo "❌ Missing required file: $file"
+            exit 1
+          else
+            echo "✅ Found: $file"
+          fi
+        done
+        
+    - name: Check permissions
+      run: |
+        node -e "
+          const manifest = JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'));
+          const permissions = manifest.permissions || [];
+          console.log('📋 Permissions:', permissions.join(', '));
+          if (permissions.includes('debugger')) {
+            console.log('⚠️  Warning: debugger permission detected');
+          }
+        "
+        
+    - name: Build extension (if successful)
+      run: |
+        echo "🚀 All checks passed!"
+        echo "Extension ready for testing"

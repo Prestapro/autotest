@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "X-PrestaShop-Debug",
+          "operation": "set",
+          "value": "enhanced-pro-v2"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "*://localhost:808*/*",
+      "resourceTypes": ["main_frame", "sub_frame", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 2,
+    "action": {
+      "type": "modifyHeaders",
+      "responseHeaders": [
+        {
+          "header": "X-Debug-Session",
+          "operation": "set", 
+          "value": "prestashop-enhanced"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "*://localhost:808*/*",
+      "resourceTypes": ["main_frame", "sub_frame", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "X-Claude-Debug",
+          "operation": "set",
+          "value": "llm-optimized"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "*prestashop*",
+      "resourceTypes": ["xmlhttprequest", "other"]
+    }
+  }
+]
